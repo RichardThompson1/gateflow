@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "version": "1",
+  "plugins": [
+    {
+      "name": "gateflow",
+      "description": "Five-gate build discipline + orchestrator workflow: contract-first steps, concept-first reporting, diagram-first design, adversarial fresh-eyes review; norms via SessionStart hook, guards via PreToolUse.",
+      "version": "0.1.0",
+      "source": "."
+    }
+  ]
+}

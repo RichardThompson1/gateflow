@@ -24,7 +24,11 @@ These are the always-on norms; the /gateflow:* skills are the invokable procedur
    consequence; a per-unit delta cites its baseline. "It didn't get slower" is a claim, not a
    measurement.
 
-6. NO COMMITS UNLESS ASKED.
+6. NEVER RUN `git commit` — IT IS THE USER'S ACTION, EVEN WHEN ASKED TO "COMMIT". Stage (`git add`)
+   only with approval and DRAFT the commit message; the user always runs the commit themselves. This is
+   stronger than "don't commit unless asked" — "make a commit"/"commit this" means stage + hand over the
+   message, not run it. Enforced by the PreToolUse guard `hooks/guard_no_git_commit.sh` (exit 2 on any
+   `git commit`).
 
 7. BUILD STEPS RUN THROUGH /gateflow:step (the five-gate process). A plain-English "let's do step X"
    should route through it, at the supervision level the user names.
