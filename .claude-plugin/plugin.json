@@ -1,7 +1,7 @@
 {
   "name": "gateflow",
   "description": "Five-gate build discipline + orchestrator workflow: contract-first steps, concept-first reporting, diagram-first design, adversarial fresh-eyes review. The METHOD travels; each repo supplies its own run/ops binding.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": { "name": "Richard Thompson" },
   "license": "MIT"
 }

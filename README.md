@@ -26,6 +26,29 @@ scaffolding ahead, numbers carry lifecycle classes, no commits unless asked.
 - `gateflow:gate4` (Opus, read-only) — adversarial fresh-eyes review, no build context.
 - `gateflow:digest` (Sonnet) — bulk reads returned as structured digests.
 
+**Guards** (`PreToolUse` hooks; they also fire in bypass-permissions mode, so unattended sessions can run
+without prompts). A guard exits 2 to block the call, and its stderr tells the model why.
+- `hooks/guard_no_git_commit.sh`: blocks `git commit`.
+- `hooks/guard_destructive.py` (Bash):
+  - blocks `git push`, work-losing git forms (`reset --hard`, `clean -f`, `checkout --`, `restore`,
+    `branch -D`, `stash drop`, history rewrites) and `--no-verify` / `core.hooksPath`;
+  - blocks `rm -r` and `find -delete` outside `/tmp`, disk and power commands, system `systemctl`,
+    mass kills, and outward-facing `gh` calls;
+  - blocks any write to a protected path, `claude plugin disable`, and changes to `CLAUDECODE`.
+- `hooks/guard_protected_paths.py` (Edit/Write): blocks edits to the protected paths. Those are Claude
+  settings (user and project), hook directories, installed plugins, `.git/hooks`, `.git/config` and
+  `~/.gitconfig`, which covers everything an unattended session could use to disarm its own guards.
+- `git-hooks/pre-commit`, `git-hooks/pre-push`: refuse commits/pushes when `CLAUDECODE=1`. Claude Code
+  sets that in every shell it spawns, and your own terminal doesn't. These catch commits and pushes that
+  start inside scripts, which the text guards can't see. They're per-clone and not installed by the
+  plugin; see Install.
+- `tests/test_guards.py`: the case table (BLOCK/ALLOW per command). Run `python3 tests/test_guards.py`
+  after any guard edit.
+
+The guards read command *text*. They can't see what a script or a Python heredoc does after it starts.
+They catch slips; they aren't a sandbox. Internal errors fail closed (block), so a guard bug stalls the
+session visibly instead of silently letting everything through.
+
 ## What each repo must supply (the binding)
 
 The plugin is domain-neutral. A repo that uses it provides:
@@ -58,6 +81,11 @@ fine), then on each machine:
 /plugin install gateflow@gateflow
 ```
 Update everywhere by pushing a new version and re-running `/plugin install`.
+
+**Git hooks (per clone, run by the user; the Edit/Bash guards refuse to do it):**
+```bash
+cp /path/to/gateflow/git-hooks/pre-commit /path/to/gateflow/git-hooks/pre-push /path/to/repo/.git/hooks/ && chmod +x /path/to/repo/.git/hooks/pre-commit /path/to/repo/.git/hooks/pre-push
+```
 
 ## Verify on first install (recalled-from-docs — smoke-test these)
 

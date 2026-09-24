@@ -7,7 +7,7 @@
     {
       "name": "gateflow",
       "description": "Five-gate build discipline + orchestrator workflow: contract-first steps, concept-first reporting, diagram-first design, adversarial fresh-eyes review; norms via SessionStart hook, guards via PreToolUse.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "."
     }
   ]

@@ -1,0 +1,10 @@
+#!/bin/sh
+# gateflow git hook: refuses a commit made from inside a Claude Code session. Claude Code sets
+# CLAUDECODE=1 in every shell it spawns; a normal terminal does not, so the user's own commits pass.
+# Git runs this hook however the commit was started (tool call, script, Python subprocess); only
+# --no-verify or core.hooksPath skip it, and guard_destructive.py blocks both in Claude sessions.
+if [ "${CLAUDECODE:-}" = "1" ]; then
+  echo "BLOCKED (gateflow pre-commit): commits from a Claude Code session are refused; the user commits." >&2
+  exit 1
+fi
+exit 0
